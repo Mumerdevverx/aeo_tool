@@ -10,13 +10,13 @@ export async function checkSSLFromDomain(url) {
   try {
     const urlObj = new URL(url);
     const domain = urlObj.hostname;
-    
+
     // Use Google's DNS API to check SSL
     const response = await fetch(
       `https://dns.google/resolve?name=${domain}&type=TXT`
     );
     const data = await response.json();
-    
+
     // Check if domain has HTTPS
     if (url.startsWith('https://')) {
       return {
@@ -30,7 +30,7 @@ export async function checkSSLFromDomain(url) {
       message: '❌ No SSL certificate - Website is not secure',
       score: -25
     };
-    
+
   } catch (error) {
     // Fallback: Check URL structure
     if (url.startsWith('https://')) {
@@ -58,14 +58,14 @@ export function checkDomainQuality(url) {
     const parts = domain.split('.');
     const tld = parts[parts.length - 1];
     const name = parts.length > 2 ? parts.slice(1, -1).join('.') : parts.slice(0, -1).join('.');
-    
+
     let score = 0;
     const issues = [];
-    
+
     // Check TLD
     const goodTLDs = ['com', 'org', 'net', 'edu', 'gov', 'io', 'co', 'pk'];
     const mediumTLDs = ['app', 'dev', 'tech', 'ai', 'xyz', 'online'];
-    
+
     if (goodTLDs.includes(tld)) {
       issues.push('✅ Trusted domain extension');
     } else if (mediumTLDs.includes(tld)) {
@@ -75,7 +75,7 @@ export function checkDomainQuality(url) {
       issues.push('⚠️ Unusual domain extension');
       score -= 10;
     }
-    
+
     // Check domain length
     if (name && name.length < 3) {
       issues.push('⚠️ Very short domain name');
@@ -86,21 +86,21 @@ export function checkDomainQuality(url) {
     } else {
       issues.push('✅ Domain name length is optimal');
     }
-    
+
     // Check for hyphens
     if (name && name.includes('-')) {
       issues.push('⚠️ Domain contains hyphens');
       score -= 5;
     }
-    
+
     // Check for numbers
     if (name && /\d/.test(name)) {
       issues.push('ℹ️ Domain contains numbers');
       score -= 3;
     }
-    
+
     return { score, issues };
-    
+
   } catch (error) {
     return {
       score: 0,
@@ -117,7 +117,7 @@ export function estimateLoadTime(domainQuality) {
   const baseTime = 500;
   const qualityFactor = (100 - domainQuality) / 100;
   const estimatedTime = baseTime + (qualityFactor * 3000);
-  
+
   if (estimatedTime < 1000) {
     return {
       status: 'pass',

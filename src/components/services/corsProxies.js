@@ -34,12 +34,12 @@ export const CORS_PROXIES = [
 // ============================================
 export async function fetchWithMultipleProxies(url, timeout = 15000) {
   const errors = [];
-  
+
   for (const proxy of CORS_PROXIES) {
     try {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), timeout);
-      
+
       const proxyUrl = proxy.url + encodeURIComponent(url);
       const response = await fetch(proxyUrl, {
         signal: controller.signal,
@@ -47,9 +47,9 @@ export async function fetchWithMultipleProxies(url, timeout = 15000) {
           'User-Agent': 'Mozilla/5.0 (compatible; WebsiteAuditor/2.0)'
         }
       });
-      
+
       clearTimeout(timeoutId);
-      
+
       if (response.ok) {
         const html = await response.text();
         return { 
@@ -60,15 +60,15 @@ export async function fetchWithMultipleProxies(url, timeout = 15000) {
           status: response.status
         };
       }
-      
+
       errors.push(`${proxy.name}: HTTP ${response.status}`);
-      
+
     } catch (error) {
       errors.push(`${proxy.name}: ${error.message}`);
       continue;
     }
   }
-  
+
   return { 
     success: false, 
     error: errors.join(' | ')

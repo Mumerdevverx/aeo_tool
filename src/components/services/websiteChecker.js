@@ -57,13 +57,13 @@ function checkDomainQuality(url) {
     const domain = urlObj.hostname;
     const parts = domain.split('.');
     const tld = parts[parts.length - 1];
-    
+
     let issues = [];
     let score = 0;
-    
+
     const goodTLDs = ['com', 'org', 'net', 'edu', 'gov', 'io', 'co'];
     const mediumTLDs = ['app', 'dev', 'tech', 'ai', 'xyz', 'online'];
-    
+
     if (goodTLDs.includes(tld)) {
       issues.push('✅ Trusted domain extension');
     } else if (mediumTLDs.includes(tld)) {
@@ -73,7 +73,7 @@ function checkDomainQuality(url) {
       issues.push('⚠️ Unusual domain extension');
       score -= 10;
     }
-    
+
     return { score, issues };
   } catch (error) {
     return { score: 0, issues: ['ℹ️ Could not analyze domain quality'] };
@@ -87,7 +87,7 @@ function analyzeHTML(html, url) {
   const results = [];
   let score = 0;
   let hasContent = false;
-  
+
   // Check for real content
   const bodyMatch = html.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
   if (bodyMatch && bodyMatch[1]) {
@@ -96,7 +96,7 @@ function analyzeHTML(html, url) {
       hasContent = true;
     }
   }
-  
+
   // ---- TITLE TAG ----
   const titleMatch = html.match(/<title[^>]*>([^<]*)<\/title>/i);
   if (titleMatch && titleMatch[1] && titleMatch[1].trim().length > 0) {
@@ -121,7 +121,7 @@ function analyzeHTML(html, url) {
       score: -25
     });
   }
-  
+
   // ---- META DESCRIPTION ----
   const descMatch = html.match(/<meta[^>]*name=["']description["'][^>]*content=["']([^"']*)["']/i);
   if (descMatch && descMatch[1] && descMatch[1].trim().length > 0) {
@@ -146,7 +146,7 @@ function analyzeHTML(html, url) {
       score: -25
     });
   }
-  
+
   // ---- VIEWPORT ----
   const viewportMatch = html.match(/<meta[^>]*name=["']viewport["'][^>]*>/i);
   if (viewportMatch) {
@@ -162,7 +162,7 @@ function analyzeHTML(html, url) {
       score: -20
     });
   }
-  
+
   // ---- H1 HEADING ----
   const h1Tags = html.match(/<h1[^>]*>/gi) || [];
   if (h1Tags.length === 1) {
@@ -193,7 +193,7 @@ function analyzeHTML(html, url) {
       score: -10
     });
   }
-  
+
   // ---- CONTENT ----
   if (!hasContent) {
     results.push({
@@ -208,12 +208,12 @@ function analyzeHTML(html, url) {
       score: 0
     });
   }
-  
+
   // ---- IMAGES ALT TEXT ----
   const imgTags = html.match(/<img[^>]*>/gi) || [];
   const imgWithAlt = imgTags.filter(img => img.includes('alt=') && !img.includes('alt=""'));
   const imgWithoutAlt = imgTags.filter(img => !img.includes('alt=') || img.includes('alt=""'));
-  
+
   if (imgTags.length > 0) {
     if (imgWithoutAlt.length === 0) {
       results.push({
@@ -238,7 +238,7 @@ function analyzeHTML(html, url) {
       }
     }
   }
-  
+
   return { results, hasContent };
 }
 
@@ -248,7 +248,7 @@ function analyzeHTML(html, url) {
 function analyzeHeaders(headers) {
   const results = [];
   let score = 0;
-  
+
   const securityHeaders = {
     'x-frame-options': 'Clickjacking protection',
     'x-content-type-options': 'MIME sniffing protection',
@@ -256,9 +256,9 @@ function analyzeHeaders(headers) {
     'content-security-policy': 'XSS protection',
     'referrer-policy': 'Referrer control'
   };
-  
+
   let foundCount = 0;
-  
+
   Object.entries(securityHeaders).forEach(([header, description]) => {
     if (headers.has(header)) {
       results.push({
@@ -275,7 +275,7 @@ function analyzeHeaders(headers) {
       });
     }
   });
-  
+
   // Check GZIP
   const contentEncoding = headers.get('content-encoding');
   if (contentEncoding && contentEncoding.includes('gzip')) {
@@ -294,7 +294,7 @@ function analyzeHeaders(headers) {
       });
     }
   }
-  
+
   // Summary
   if (foundCount < 3) {
     results.push({
@@ -303,7 +303,7 @@ function analyzeHeaders(headers) {
       score: -10
     });
   }
-  
+
   return results;
 }
 
@@ -315,7 +315,7 @@ async function measureSpeed(url) {
     const start = performance.now();
     const response = await fetch(url, { method: 'HEAD', cache: 'no-cache' });
     const loadTime = performance.now() - start;
-    
+
     if (loadTime < 1000) {
       return {
         status: 'pass',
@@ -360,59 +360,59 @@ export async function checkWebsite(url) {
     formattedUrl = 'https://' + formattedUrl;
   }
   formattedUrl = formattedUrl.replace(/\/+$/, '');
-  
+
   // Check cache
   if (auditCache.has(formattedUrl)) {
     return auditCache.get(formattedUrl);
   }
-  
+
   try {
     const problems = [];
     let totalScore = 100;
     let contentFetched = false;
     let hasContent = false;
-    
+
     // ============================================
     // STEP 1: SSL Check - REAL
     // ============================================
     const sslResult = checkSSL(formattedUrl);
     problems.push(sslResult.message);
     totalScore += sslResult.score;
-    
+
     // ============================================
     // STEP 2: Domain Quality - REAL
     // ============================================
     const domainResult = checkDomainQuality(formattedUrl);
     domainResult.issues.forEach(issue => problems.push(issue));
     totalScore += domainResult.score;
-    
+
     // ============================================
     // STEP 3: Try to fetch content
     // ============================================
     const fetchResult = await fetchWithRetry(formattedUrl);
-    
+
     if (fetchResult.success && fetchResult.html) {
       contentFetched = true;
       problems.push(`ℹ️ Content fetched successfully`);
-      
+
       // ============================================
       // STEP 4: Speed Test - REAL
       // ============================================
       const speedResult = await measureSpeed(formattedUrl);
       problems.push(speedResult.message);
       totalScore += speedResult.score;
-      
+
       // ============================================
       // STEP 5: HTML Analysis - REAL
       // ============================================
       const htmlResult = analyzeHTML(fetchResult.html, formattedUrl);
       hasContent = htmlResult.hasContent;
-      
+
       htmlResult.results.forEach(result => {
         problems.push(result.message);
         totalScore += result.score;
       });
-      
+
       // ============================================
       // STEP 6: Headers Analysis - REAL
       // ============================================
@@ -423,7 +423,7 @@ export async function checkWebsite(url) {
           totalScore += result.score;
         });
       }
-      
+
     } else {
       // ============================================
       // NO CONTENT - REAL PENALTY
@@ -431,22 +431,22 @@ export async function checkWebsite(url) {
       problems.push('❌ Could not fetch website content');
       problems.push('❌ Website may be a login page, blocked, or inaccessible');
       problems.push('❌ Only SSL and domain checks are available');
-      
+
       // Apply real penalties
       totalScore -= 50; // Heavy penalty for no content
     }
-    
+
     // ============================================
     // STEP 7: Final Score Calculation - NO FAKING
     // ============================================
     // Cap score between 0-100
     totalScore = Math.max(0, Math.min(100, Math.round(totalScore)));
-    
+
     // If no content, ensure score is not too high
     if (!contentFetched || !hasContent) {
       totalScore = Math.min(totalScore, 30); // Max 30 for no content
     }
-    
+
     // ============================================
     // STEP 8: Grade Assignment
     // ============================================
@@ -456,7 +456,7 @@ export async function checkWebsite(url) {
     else if (totalScore >= 60) grade = 'C';
     else if (totalScore >= 40) grade = 'D';
     else grade = 'F';
-    
+
     // ============================================
     // STEP 9: Summary Message
     // ============================================
@@ -475,14 +475,14 @@ export async function checkWebsite(url) {
       summaryMessage = '🚫 Website is inaccessible or has no content';
     }
     problems.push(summaryMessage);
-    
+
     const result = { grade, problems, score: totalScore };
     auditCache.set(formattedUrl, result);
     return result;
-    
+
   } catch (error) {
     console.error('Error in checkWebsite:', error);
-    
+
     const errorResult = {
       grade: 'F',
       score: 0,
@@ -498,3 +498,4 @@ export async function checkWebsite(url) {
 }
 
 export default checkWebsite;
+ 
