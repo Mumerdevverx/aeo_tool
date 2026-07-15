@@ -82,7 +82,7 @@ const GradeCard = ({ grade }) => {
           <h3 className={`text-sm sm:text-base md:text-lg font-semibold ${styles.text}`}>
             {styles.label}
           </h3>
-          <p className="text-[8px] sm:text-[10px] text-gray-500">
+          <p className="text-[8px] sm:text-[11px] text-gray-500">
             Performance Grade
           </p>
         </div>
