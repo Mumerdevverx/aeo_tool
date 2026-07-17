@@ -2,6 +2,7 @@
 import emailjs from '@emailjs/browser';
 import axios from 'axios';
 import PDFGenerator from './PDFGenerator';
+import { Download, Loader2 } from "lucide-react";
 
 // ============================================
 // ENVIRONMENT VARIABLES
@@ -330,289 +331,218 @@ export default function ReportDownload({
   // RENDER
   // ============================================
   return (
-    <div className="mt-6 sm:mt-8 space-y-4 sm:space-y-6">
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_1fr] gap-4 sm:gap-6">
+    <div className="w-full">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         
-        {/* Left Side - White Card */}
-        <div className="rounded-2xl sm:rounded-3xl lg:rounded-4xl bg-white p-5 sm:p-6 lg:p-8 shadow-xl ring-1 ring-slate-200">
-          <span className="inline-flex rounded-full bg-sky-500/15 px-2.5 sm:px-3 py-1 text-[10px] sm:text-xs font-semibold uppercase tracking-[0.3em] text-sky-700">
+        {/* Left Side - Report Summary */}
+        <div className="rounded-2xl bg-slate-900/60 backdrop-blur-sm p-6 border border-slate-800">
+          <span className="inline-flex rounded-full bg-indigo-500/15 px-3 py-1 text-xs font-semibold uppercase tracking-[0.3em] text-indigo-400">
             Audit summary
           </span>
-          <h1 className="mt-4 sm:mt-6 text-xl sm:text-2xl lg:text-3xl font-semibold leading-tight text-slate-900">
+          <h1 className="mt-4 text-xl font-semibold leading-tight text-white">
             Export a beautiful website audit report
           </h1>
-          <p className="mt-3 sm:mt-4 text-xs sm:text-sm leading-5 sm:leading-6 text-slate-500">
+          <p className="mt-3 text-sm leading-6 text-slate-400">
             Create a ready-to-share PDF with your website grade, issue breakdown, and recommendations in one polished package.
           </p>
 
-          <div className="mt-6 sm:mt-8 grid gap-3 sm:gap-4">
-            <div className="rounded-2xl sm:rounded-3xl bg-slate-50 p-4 sm:p-5 ring-1 ring-slate-200">
-              <p className="text-[10px] sm:text-xs uppercase tracking-[0.3em] text-slate-400">
+          <div className="mt-6 grid gap-4">
+            <div className="rounded-2xl bg-slate-800/50 p-5 border border-slate-700">
+              <p className="text-xs uppercase tracking-[0.3em] text-slate-400">
                 Overall grade
               </p>
-              <div className="mt-3 sm:mt-4 flex items-center gap-3 sm:gap-4">
-                <div className={`flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl sm:rounded-3xl text-2xl sm:text-3xl font-bold text-white shadow-lg ${
-                  grade === 'A' ? 'bg-gradient-to-br from-green-500 to-green-600 shadow-green-500/30' :
+              <div className="mt-3 flex items-center gap-4">
+                <div className={`flex h-16 w-16 items-center justify-center rounded-2xl text-3xl font-bold text-white shadow-lg ${
+                  grade === 'A' ? 'bg-gradient-to-br from-emerald-500 to-emerald-600 shadow-emerald-500/30' :
                   grade === 'B' ? 'bg-gradient-to-br from-blue-500 to-blue-600 shadow-blue-500/30' :
-                  grade === 'C' ? 'bg-gradient-to-br from-yellow-500 to-yellow-600 shadow-yellow-500/30' :
+                  grade === 'C' ? 'bg-gradient-to-br from-amber-500 to-amber-600 shadow-amber-500/30' :
                   grade === 'D' ? 'bg-gradient-to-br from-orange-500 to-orange-600 shadow-orange-500/30' :
                   'bg-gradient-to-br from-red-500 to-red-600 shadow-red-500/30'
                 }`}>
                   {grade}
                 </div>
                 <div>
-                  <p className={`text-base sm:text-lg font-semibold ${
-                    grade === 'A' ? 'text-green-600' :
-                    grade === 'B' ? 'text-blue-600' :
-                    grade === 'C' ? 'text-yellow-600' :
-                    grade === 'D' ? 'text-orange-600' :
-                    'text-red-600'
+                  <p className={`text-lg font-semibold ${
+                    grade === 'A' ? 'text-emerald-400' :
+                    grade === 'B' ? 'text-blue-400' :
+                    grade === 'C' ? 'text-amber-400' :
+                    grade === 'D' ? 'text-orange-400' :
+                    'text-red-400'
                   }`}>
                     {gradeColor.label}
                   </p>
-                  <p className="mt-0.5 sm:mt-1 text-xs sm:text-sm text-slate-400">
+                  <p className="mt-0.5 text-sm text-slate-400">
                     Score: {finalScore}/100
                   </p>
                 </div>
               </div>
             </div>
 
-            <div className="grid grid-cols-3 gap-2 sm:gap-3">
-              <div className="rounded-2xl sm:rounded-3xl bg-slate-50 p-3 sm:p-4 text-center ring-1 ring-slate-200">
-                <p className="text-xl sm:text-2xl font-semibold text-slate-900">
+            <div className="grid grid-cols-3 gap-3">
+              <div className="rounded-2xl bg-slate-800/50 p-4 text-center border border-slate-700">
+                <p className="text-2xl font-semibold text-white">
                   {problems.length}
                 </p>
-                <p className="mt-1 sm:mt-2 text-[8px] sm:text-xs uppercase tracking-[0.2em] text-slate-400">
+                <p className="mt-1 text-xs uppercase tracking-[0.2em] text-slate-400">
                   Total checks
                 </p>
               </div>
-              <div className="rounded-2xl sm:rounded-3xl bg-slate-50 p-3 sm:p-4 text-center ring-1 ring-slate-200">
-                <p className="text-xl sm:text-2xl font-semibold text-red-600">
+              <div className="rounded-2xl bg-slate-800/50 p-4 text-center border border-slate-700">
+                <p className="text-2xl font-semibold text-red-400">
                   {criticalCount}
                 </p>
-                <p className="mt-1 sm:mt-2 text-[8px] sm:text-xs uppercase tracking-[0.2em] text-slate-400">
+                <p className="mt-1 text-xs uppercase tracking-[0.2em] text-slate-400">
                   Critical
                 </p>
               </div>
-              <div className="rounded-2xl sm:rounded-3xl bg-slate-50 p-3 sm:p-4 text-center ring-1 ring-slate-200">
-                <p className="text-xl sm:text-2xl font-semibold text-amber-600">
+              <div className="rounded-2xl bg-slate-800/50 p-4 text-center border border-slate-700">
+                <p className="text-2xl font-semibold text-amber-400">
                   {realIssueCount === 0 ? "0" : realIssueCount}
                 </p>
-                <p className="mt-1 sm:mt-2 text-[8px] sm:text-xs uppercase tracking-[0.2em] text-slate-400">
+                <p className="mt-1 text-xs uppercase tracking-[0.2em] text-slate-400">
                   Issues to fix
                 </p>
               </div>
             </div>
           </div>
 
-          {/* ✅ Email Input - Fixed */}
-         <div className="mt-6 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-  <input
-    type="email"
-    placeholder="Enter your email to receive the PDF report"
-    value={emailInput}
-    onChange={(e) => setEmailInput(e.target.value)}
-    className="w-full sm:flex-1 h-12 rounded-xl border border-slate-200 bg-white px-4 text-sm text-slate-900 outline-none transition focus:border-sky-400 focus:ring-4 focus:ring-sky-100"
-  />
+          {/* Email Input */}
+          <form onSubmit={handleEmailSubmit} className="mt-6 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+            <input
+              type="email"
+              placeholder="Enter your email to receive the PDF report"
+              value={emailInput}
+              onChange={(e) => setEmailInput(e.target.value)}
+              className="flex-1 h-12 rounded-xl border border-slate-700 bg-slate-800/50 px-4 text-sm text-white outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/20 placeholder:text-slate-500"
+            />
+            <button
+              type="submit"
+              disabled={isSending}
+              className="h-12 px-6 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 text-sm font-semibold text-white shadow-lg shadow-indigo-500/20 transition hover:from-indigo-700 hover:to-purple-700 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+            >
+              {isSending ? (
+                <>
+                  <Loader2 className="inline w-4 h-4 mr-2 animate-spin" />
+                  Sending...
+                </>
+              ) : (
+                "Send Report"
+              )}
+            </button>
+          </form>
 
-  <button
-    disabled={isSending}
-    onClick={handleEmailSubmit}
-    className="w-full sm:w-auto h-12 px-6 rounded-xl bg-gradient-to-r from-sky-600 to-indigo-600 text-sm font-semibold text-white shadow-lg shadow-sky-500/20 transition hover:from-sky-700 hover:to-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
-  >
-    {isSending ? (
-      <>
-        <svg
-          className="animate-spin inline h-4 w-4 mr-2"
-          viewBox="0 0 24 24"
-        >
-          <circle
-            className="opacity-25"
-            cx="12"
-            cy="12"
-            r="10"
-            stroke="currentColor"
-            strokeWidth="4"
-            fill="none"
-          />
-          <path
-            className="opacity-75"
-            fill="currentColor"
-            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-          />
-        </svg>
-        Sending...
-      </>
-    ) : (
-      "Send Report"
-    )}
-  </button>
-</div>
-
-          {/* Download PDF Only Button */}
-        
+          {/* Download Button */}
+          <button
+            onClick={handleManualDownload}
+            className="w-full mt-3 h-12 px-6 rounded-xl bg-slate-800/50 border border-slate-700 text-sm font-semibold text-slate-300 transition hover:bg-slate-700/50 hover:text-white flex items-center justify-center gap-2"
+          >
+            <Download className="w-4 h-4" />
+            Download PDF Now
+          </button>
 
           {sendStatus && (
-            <div className={`mt-3 p-3 rounded-xl text-xs sm:text-sm ${
-              sendStatus.includes('✅') ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' :
-              sendStatus.includes('❌') ? 'bg-red-50 text-red-700 border border-red-100' :
-              'bg-slate-50 text-slate-600 border border-slate-100'
+            <div className={`mt-3 p-3 rounded-xl text-sm ${
+              sendStatus.includes('✅') ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' :
+              sendStatus.includes('❌') ? 'bg-red-500/10 text-red-400 border border-red-500/20' :
+              'bg-slate-800/50 text-slate-400 border border-slate-700'
             }`}>
               {sendStatus}
             </div>
           )}
         </div>
 
-        {/* Right Side - White Card */}
-        <div className="space-y-4 sm:space-y-6">
-          <div className="rounded-2xl sm:rounded-3xl lg:rounded-4xl bg-white p-4 sm:p-5 lg:p-6 shadow-xl ring-1 ring-slate-200">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
-              <div className="w-full sm:w-auto min-w-0">
-                <p className="text-[10px] sm:text-xs uppercase tracking-[0.3em] text-slate-400">
-                  Website
-                </p>
-                <p className="mt-1 text-sm sm:text-base font-semibold text-slate-900 truncate">
-                  {url}
-                </p>
+        {/* Right Side - Recommendations */}
+        <div className="rounded-2xl bg-slate-900/60 backdrop-blur-sm p-6 border border-slate-800">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2.5">
+              <div className="h-8 w-8 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-400">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                </svg>
               </div>
-              <div className={`rounded-2xl sm:rounded-3xl px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-bold whitespace-nowrap ${
-                grade === 'A' ? 'bg-green-50 text-green-700' :
-                grade === 'B' ? 'bg-blue-50 text-blue-700' :
-                grade === 'C' ? 'bg-yellow-50 text-yellow-700' :
-                grade === 'D' ? 'bg-orange-50 text-orange-700' :
-                'bg-rose-50 text-rose-700'
-              }`
-              }>
-                 
-                
-                {gradeColor.label}
-              </div>
-              
-            </div>
-
-            <div className="mt-4 sm:mt-6 grid grid-cols-3 gap-2 sm:gap-3">
-              <div className="rounded-2xl sm:rounded-3xl bg-slate-50 p-3 sm:p-4 text-center">
-                <p className="text-base sm:text-lg font-semibold text-slate-900">
-                  {finalScore}/100
-                </p>
-                <p className="mt-0.5 sm:mt-1 text-[8px] sm:text-xs uppercase tracking-[0.2em] text-slate-400">
-                  Score
-                </p>
-              </div>
-              <div className="rounded-2xl sm:rounded-3xl bg-slate-50 p-3 sm:p-4 text-center">
-                <p className="text-base sm:text-lg font-semibold text-red-600">
-                  {criticalCount}
-                </p>
-                <p className="mt-0.5 sm:mt-1 text-[8px] sm:text-xs uppercase tracking-[0.2em] text-slate-400">
-                  Critical
-                </p>
-              </div>
-              <div className="rounded-2xl sm:rounded-3xl bg-slate-50 p-3 sm:p-4 text-center">
-                <p className="text-base sm:text-lg font-semibold text-amber-600">
-                  {warningCount}
-                </p>
-                <p className="mt-0.5 sm:mt-1 text-[8px] sm:text-xs uppercase tracking-[0.2em] text-slate-400">
-                  Warnings
-                </p>
+              <div>
+                <p className="text-sm font-bold text-white">Actionable Recommendations</p>
+                <p className="text-xs text-slate-400">Prioritized fixes to improve your website</p>
               </div>
             </div>
+            <span className="inline-flex items-center gap-1.5 px-3 py-2 rounded-full bg-slate-800/50 text-slate-400 text-sm font-bold border border-slate-700">
+              <span className="w-2 h-2 rounded-full bg-indigo-400 animate-pulse"></span>
+              {recommendations.length} tips
+            </span>
           </div>
 
-          {/* ✅ Recommendations - Baqi Sections Ki Tarah White */}
-          <div className="rounded-2xl sm:rounded-3xl lg:rounded-4xl bg-white p-4 sm:p-5 lg:p-6 shadow-lg ring-1 ring-slate-200 hover:shadow-xl transition-shadow duration-300">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-2.5">
-                <div className="h-8 w-8 rounded-xl bg-slate-100 flex items-center justify-center text-slate-600 shadow-sm">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-                  </svg>
-                </div>
-                <div>
-                  <p className="text-sm sm:text-base font-bold text-slate-800">Actionable Recommendations</p>
-                  <p className="text-xs text-slate-500 hidden xs:block">Prioritized fixes to improve your website</p>
-                </div>
-              </div>
-              <span className="inline-flex items-center gap-1.5 px-3 py-2 rounded-full bg-slate-100 text-slate-600 text-sm font-bold shadow-sm">
-                <span className="w-2 h-2 rounded-full bg-slate-400 animate-pulse"></span>
-                {recommendations.length} tips
+          <ul className="space-y-3">
+            {recommendations.slice(0, 5).map((rec, idx) => {
+              const text = rec.replace(/^[^\s]+\s/, '');
+              const priority = idx === 0 ? 'High' : idx === 1 ? 'Medium' : 'Low';
+              const priorityColors = {
+                High: 'bg-red-500/10 text-red-400 border-red-500/20',
+                Medium: 'bg-amber-500/10 text-amber-400 border-amber-500/20',
+                Low: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+              };
+
+              return (
+                <li 
+                  key={idx} 
+                  className="group flex items-start gap-3 rounded-xl bg-slate-800/30 p-3 border border-slate-700 hover:border-indigo-500/30 transition-all duration-300"
+                >
+                  <div className={`flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full text-xs font-bold text-white shadow-md ${
+                    idx === 0 ? 'bg-gradient-to-br from-red-500 to-rose-600 shadow-red-500/30' :
+                    idx === 1 ? 'bg-gradient-to-br from-amber-500 to-orange-600 shadow-amber-500/30' :
+                    'bg-gradient-to-br from-indigo-500 to-purple-600 shadow-indigo-500/30'
+                  }`}>
+                    {idx + 1}
+                  </div>
+
+                  <div className="flex-1 min-w-0">
+                    <span className="text-sm font-medium text-slate-200 leading-relaxed">
+                      {text}
+                    </span>
+                  </div>
+
+                  <span className={`hidden sm:inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold border ${priorityColors[priority]} flex-shrink-0`}>
+                    {priority}
+                  </span>
+                </li>
+              );
+            })}
+          </ul>
+
+          {recommendations.length > 5 && (
+            <div className="mt-4 text-center">
+              <span className="text-xs text-slate-500 bg-slate-800/30 px-3 py-1.5 rounded-full border border-slate-700">
+                +{recommendations.length - 5} more recommendations available in full report
               </span>
             </div>
-
-            <ul className="space-y-3 sm:space-y-4">
-              {recommendations.slice(0, 4).map((rec, idx) => {
-                const text = rec.replace(/^[^\s]+\s/, '');
-                
-                const priority = idx === 0 ? 'High' : idx === 1 ? 'Medium' : 'Low';
-                const priorityColors = {
-                  High: 'bg-red-100 text-red-700 border-red-200',
-                  Medium: 'bg-amber-100 text-amber-700 border-amber-200',
-                  Low: 'bg-green-100 text-green-700 border-green-200'
-                };
-
-                return (
-                  <li 
-                    key={idx} 
-                    className="group flex items-start gap-3 sm:gap-4 rounded-xl sm:rounded-2xl bg-slate-50 p-3 sm:p-4 border border-slate-200 hover:border-sky-200 transition-all duration-300 hover:shadow-md"
-                  >
-                    <div className={`flex h-7 w-7 sm:h-8 sm:w-8 flex-shrink-0 items-center justify-center rounded-full text-xs font-bold text-white shadow-md ${
-                      idx === 0 ? 'bg-gradient-to-br from-rose-500 to-red-600 shadow-rose-500/30' :
-                      idx === 1 ? 'bg-gradient-to-br from-amber-500 to-orange-600 shadow-amber-500/30' :
-                      'bg-gradient-to-br from-sky-500 to-indigo-600 shadow-sky-500/30'
-                    }`}>
-                      {idx + 1}
-                    </div>
-
-                    <div className="flex-1 min-w-0">
-                      <span className="text-sm sm:text-base font-medium text-slate-800 leading-relaxed">
-                        {text}
-                      </span>
-                    </div>
-
-                    <span className={`hidden sm:inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold border ${priorityColors[priority]} flex-shrink-0 shadow-sm`}>
-                      {priority}
-                    </span>
-                  </li>
-                );
-              })}
-            </ul>
-
-            {recommendations.length > 4 && (
-              <div className="mt-4 text-center">
-                <span className="text-xs text-slate-400 bg-slate-50 px-3 py-1.5 rounded-full shadow-sm border border-slate-200">
-                  +{recommendations.length - 4} more recommendations available in full report
-                </span>
-              </div>
-            )}
-          </div>
+          )}
         </div>
-
       </div>
 
       {/* Email Sent Modal */}
       {emailSent && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
-          <div className="rounded-2xl sm:rounded-3xl bg-white p-6 sm:p-8 max-w-md w-full shadow-2xl">
-            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100 text-emerald-600">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+          <div className="rounded-2xl bg-slate-900 p-8 max-w-md w-full shadow-2xl border border-slate-700">
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-400">
               <svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
             </div>
-            <h3 className="mt-4 text-center text-lg sm:text-xl font-semibold text-slate-900">
-              PDF Report Sent! 
+            <h3 className="mt-4 text-center text-xl font-semibold text-white">
+              PDF Report Sent!
             </h3>
-            <p className="mt-3 text-center text-sm sm:text-base text-slate-600">
+            <p className="mt-3 text-center text-sm text-slate-400">
               Your website audit report has been sent to:
             </p>
-            <p className="mt-2 text-center font-semibold text-slate-900 break-all">
+            <p className="mt-2 text-center font-semibold text-indigo-400 break-all">
               {previousEmailRef.current}
             </p>
-            <p className="mt-3 text-center text-xs sm:text-sm text-slate-500 bg-sky-50 p-3 rounded-lg">
-              📎 <strong>Check your inbox</strong><br />
+            <p className="mt-3 text-center text-sm text-slate-400 bg-slate-800/50 p-3 rounded-lg border border-slate-700">
+              📎 <strong className="text-white">Check your inbox</strong><br />
               The PDF download link has been sent to your email.
             </p>
             <button
               onClick={() => setEmailSent(false)}
-              className="mt-4 w-full rounded-2xl sm:rounded-3xl bg-emerald-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-emerald-700"
+              className="mt-4 w-full rounded-xl bg-emerald-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-emerald-700"
             >
               Got It
             </button>
