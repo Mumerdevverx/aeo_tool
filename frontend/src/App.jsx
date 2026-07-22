@@ -17,7 +17,7 @@ import CompetitorVoice from "./components/dashboard/CompetitorVoice";
 import OpportunityFinder from "./components/dashboard/OpportunityFinder";
 import AlertsCenter from "./components/dashboard/AlertsCenter";
 
-const API_BASE = "http://localhost:8000/api";
+const API_BASE = "http://localhost:8001/api";
 
 export default function App() {
   const [view, setView] = useState("overview");
@@ -122,23 +122,101 @@ export default function App() {
     } catch (err) {
       console.error("Audit failed on backend. Triggering mock fallback analysis.", err);
       // Run custom client-side generation mockup
-      const mockScore = Math.floor(Math.random() * 25) + 60; // 60-85
+      const mockScore = Math.floor(Math.random() * 25) + 65; // 65-90
       const mockResult = {
         overall_score: mockScore,
         url: targetUrl,
+        scores: {
+          crawlability: 85,
+          structuredData: 60,
+          entityRecognition: 50,
+          contentStructure: 75,
+          trustSignals: 65,
+          performance: 80,
+          aiReadability: 70,
+          overallScore: mockScore
+        },
         categories: {
           crawlability: 85,
           structured_data: 60,
           entity_recognition: 50,
           content_structure: 75,
-          trust_signals: 60,
+          trust_signals: 65,
           performance: 80,
           ai_readability: 70
         },
         gaps: [
-          { issue: "Missing Organization Schema", explanation: "No structural brand schema markup detected in header metadata.", why_ai_cares: "AI engines read Organization properties to discover parent companies, brands, and trust signals.", impact_stars: 4, difficulty: "Easy", gain: "+18%", suggested_fix: "Add LD-JSON Organization block containing website name, URL, and founder fields." },
-          { issue: "Robots.txt Crawling Restrictions", explanation: "Active disallow tags restrict bot scans for custom user agents.", why_ai_cares: "Restricted access limits model crawlers from processing real-time citation links.", impact_stars: 5, difficulty: "Easy", gain: "+25%", suggested_fix: "Verify user-agent access configurations inside robots.txt." }
+          {
+            priority: "HIGH",
+            category: "Entity Recognition",
+            issue: "Missing Organization Schema",
+            explanation: "No structural brand schema markup detected in header metadata.",
+            why_ai_cares: "AI engines read Organization properties to discover parent companies, brands, and trust signals.",
+            impact_stars: 5,
+            difficulty: "Easy",
+            gain: "+18% Brand Authority",
+            fix: "Add LD-JSON Organization block containing website name, URL, and founder fields.",
+            suggested_fix: "Add LD-JSON Organization block containing website name, URL, and founder fields."
+          },
+          {
+            priority: "HIGH",
+            category: "Crawlability",
+            issue: "Robots.txt Crawling Restrictions",
+            explanation: "Active disallow tags restrict bot scans for custom user agents.",
+            why_ai_cares: "Restricted access limits model crawlers from processing real-time citation links.",
+            impact_stars: 5,
+            difficulty: "Easy",
+            gain: "+25% AI Indexing",
+            fix: "Verify user-agent access configurations inside robots.txt for GPTBot, ClaudeBot, and PerplexityBot.",
+            suggested_fix: "Verify user-agent access configurations inside robots.txt for GPTBot, ClaudeBot, and PerplexityBot."
+          },
+          {
+            priority: "MEDIUM",
+            category: "Content Structure",
+            issue: "Missing H3 Subheadings",
+            explanation: "No H3 heading hierarchy detected under main sections.",
+            why_ai_cares: "AI models require sub-headings to parse and cite distinct topics.",
+            impact_stars: 3,
+            difficulty: "Easy",
+            gain: "+10% AI Readability",
+            fix: "Divide H2 subtopics into descriptive H3 sections.",
+            suggested_fix: "Divide H2 subtopics into descriptive H3 sections."
+          }
         ],
+        aiReadiness: {
+          readinessScore: mockScore,
+          readinessStatus: mockScore >= 80 ? "Highly Ready" : "Moderate Readiness",
+          strengths: [
+            "HTTPS SSL Encryption Enabled",
+            "Valid Title & Meta description tags",
+            "Clear section layout & H1 headings"
+          ],
+          improvements: [
+            "Add JSON-LD FAQPage schema block",
+            "Include alt text for all images",
+            "Explicitly allow GPTBot & ClaudeBot in robots.txt"
+          ],
+          answerEngineBreakdown: [
+            { engine: "ChatGPT (GPT-4o)", status: "Ready", score: 85, note: "High text clarity & structured H1/H2 flow" },
+            { engine: "Perplexity AI", status: "Needs FAQ Schema", score: 65, note: "Requires FAQ schema for direct answer quotes" },
+            { engine: "Claude 3.5 Sonnet", status: "Ready", score: 78, note: "Clear topical authority & good word count" },
+            { engine: "Google AI Overviews", status: "Needs Entity Schema", score: 60, note: "Requires Organization sameAs social links" }
+          ]
+        },
+        scrapedData: {
+          url: targetUrl,
+          title: "Target Website Title",
+          metaDescription: "Comprehensive meta description found on targeted page",
+          h1Tags: ["Welcome to Target Site"],
+          h2Tags: ["Core Services", "Pricing Plans", "About Us"],
+          h3Tags: [],
+          totalImages: 14,
+          imagesWithAlt: 9,
+          hasSSL: "Yes (HTTPS)",
+          canonical: "Present",
+          jsonLdSchemas: ["WebPage"],
+          wordCount: 840
+        },
         recommendations: [
           { id: "rec-1", issue: "Deploy JSON-LD Organization Schema", why_ai_cares: "Organization tags establish primary brand credentials.", business_impact: "Improves E-E-A-T scores across search indices. Priority high.", difficulty: "Easy", gain: "+18% AI visibility", affected_pages: [targetUrl], implementation_steps: ["Generate organization template markup", "Inject code inside head blocks", "Validate with Google structured tests"], priority: "HIGH" }
         ],
@@ -149,9 +227,6 @@ export default function App() {
           long_term: ["Optimize internal navigation lists"],
           timeline_weeks: "3 Weeks",
           expected_score_improvement: "+14%"
-        },
-        competitors: {
-          your_brand: { name: "Your Brand", mention_percentage: 25, ranking: 3, citation_count: 5, visibility_score: mockScore, ai_mentions: 12 }
         }
       };
       setAuditedData(mockResult);

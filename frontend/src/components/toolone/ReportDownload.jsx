@@ -378,32 +378,7 @@ export default function ReportDownload({
               </div>
             </div>
 
-            <div className="grid grid-cols-3 gap-3">
-              <div className="rounded-2xl bg-slate-800/50 p-4 text-center border border-slate-700">
-                <p className="text-2xl font-semibold text-white">
-                  {problems.length}
-                </p>
-                <p className="mt-1 text-xs uppercase tracking-[0.2em] text-slate-400">
-                  Total checks
-                </p>
-              </div>
-              <div className="rounded-2xl bg-slate-800/50 p-4 text-center border border-slate-700">
-                <p className="text-2xl font-semibold text-red-400">
-                  {criticalCount}
-                </p>
-                <p className="mt-1 text-xs uppercase tracking-[0.2em] text-slate-400">
-                  Critical
-                </p>
-              </div>
-              <div className="rounded-2xl bg-slate-800/50 p-4 text-center border border-slate-700">
-                <p className="text-2xl font-semibold text-amber-400">
-                  {realIssueCount === 0 ? "0" : realIssueCount}
-                </p>
-                <p className="mt-1 text-xs uppercase tracking-[0.2em] text-slate-400">
-                  Issues to fix
-                </p>
-              </div>
-            </div>
+           
           </div>
 
           {/* Email Input */}

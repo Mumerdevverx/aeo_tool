@@ -10,6 +10,9 @@ import cors from 'cors'
 import nodemailer from 'nodemailer'
 import fetch from 'node-fetch'
 import { load as cheerioLoad } from 'cheerio'
+import { AgentToolkit, SEO_ANALYSIS_PROMPT } from './agentToolkit.js'
+
+const toolkit = new AgentToolkit({ apiKey: process.env.COHERE_API_KEY || '' })
 
 const app = express()
 app.use(cors())
@@ -167,6 +170,16 @@ async function scrapeWebsite(url) {
   $('h1,h2,h3,h4,h5,h6').each((_, el) => {
     result.content_structure.headings.push({ tag: el.tagName.toUpperCase(), text: $(el).text().trim() })
   })
+
+  // Images
+  const totalImgs = $('img').length
+  let altImgs = 0
+  $('img').each((_, el) => {
+    const alt = $(el).attr('alt')
+    if (alt && alt.trim().length > 0) altImgs++
+  })
+  result.totalImages = totalImgs
+  result.imagesWithAlt = altImgs
 
   // Word count
   result.content_structure.word_count = ($('body').text() || '').split(/\s+/).length
@@ -383,7 +396,7 @@ app.post('/api/audit', async (req, res) => {
 
   try {
     const scan = await scrapeWebsite(url)
-    const result = await analyzeWithCohere(scan)
+    const result = await toolkit.runSeoAudit(scan)
     result.url = url
     result.title = scan.title
     result.description = scan.description
