@@ -51,78 +51,7 @@ export default function DashboardOverview({
         <p className="text-slate-400 mt-1">Real-time search engine visibility audit logs, model tracking, and threat monitoring.</p>
       </div>
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-        {/* Metric 1 */}
-        <div className="glass-panel p-5 rounded-2xl relative overflow-hidden flex flex-col justify-between">
-          <div className="flex justify-between items-start">
-            <span className="text-sm font-semibold text-slate-400">AI Visibility Index</span>
-            <span className="flex items-center gap-1 text-xs text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full font-bold">
-              <TrendingUp className="w-3.5 h-3.5" /> +4.2%
-            </span>
-          </div>
-          <div className="mt-3 flex items-baseline gap-2">
-            <span className="text-4xl font-extrabold text-white">{Math.round(averageVisibility)}</span>
-            <span className="text-slate-500 font-semibold">/100</span>
-          </div>
-          <div className="mt-4 text-xs text-slate-400 flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-            Weighted average of audited domains
-          </div>
-          <div className="absolute top-1/2 -right-4 -translate-y-1/2 opacity-[0.03] text-indigo-500">
-            <Award className="w-32 h-32" />
-          </div>
-        </div>
-
-        {/* Metric 2 */}
-        <div className="glass-panel p-5 rounded-2xl relative overflow-hidden flex flex-col justify-between">
-          <div className="flex justify-between items-start">
-            <span className="text-sm font-semibold text-slate-400">Total Audits Ran</span>
-            <span className="text-xs text-slate-500 font-semibold">Pages audited</span>
-          </div>
-          <div className="mt-3 flex items-baseline gap-2">
-            <span className="text-4xl font-extrabold text-white">{totalAudits}</span>
-            <span className="text-slate-500 text-sm">URLs</span>
-          </div>
-          <div className="mt-4 text-xs text-slate-400 flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-indigo-500"></span>
-            Ready to export PDF reports
-          </div>
-        </div>
-
-        {/* Metric 3 */}
-        <div className="glass-panel p-5 rounded-2xl relative overflow-hidden flex flex-col justify-between">
-          <div className="flex justify-between items-start">
-            <span className="text-sm font-semibold text-slate-400">Active Alert Feeds</span>
-            <span className="flex items-center gap-1 text-xs text-rose-400 bg-rose-500/10 px-2 py-0.5 rounded-full font-bold">
-              Critical
-            </span>
-          </div>
-          <div className="mt-3 flex items-baseline gap-2">
-            <span className="text-4xl font-extrabold text-white">{activeAlerts}</span>
-            <span className="text-slate-500 text-sm">unread</span>
-          </div>
-          <div className="mt-4 text-xs text-slate-400 flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span>
-            Real-time monitoring active
-          </div>
-        </div>
-
-        {/* Metric 4 */}
-        <div className="glass-panel p-5 rounded-2xl relative overflow-hidden flex flex-col justify-between">
-          <div className="flex justify-between items-start">
-            <span className="text-sm font-semibold text-slate-400">Tracked AI Prompts</span>
-            <span className="text-xs text-slate-500 font-semibold">Brand terms</span>
-          </div>
-          <div className="mt-3 flex items-baseline gap-2">
-            <span className="text-4xl font-extrabold text-white">{trackedPromptsCount}</span>
-            <span className="text-slate-500 text-sm">queries</span>
-          </div>
-          <div className="mt-4 text-xs text-indigo-400 hover:underline cursor-pointer flex items-center gap-1 font-medium" onClick={() => setView("tracker")}>
-            Manage Tracker <ArrowUpRight className="w-3.5 h-3.5" />
-          </div>
-        </div>
-      </div>
+      
 
       {/* Main Charts Row */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
